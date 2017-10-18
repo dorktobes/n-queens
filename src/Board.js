@@ -184,9 +184,24 @@
         }
       } 
       return false;
-    }
+    },
 
     /*--------------------  End of Helper Functions  ---------------------*/
+    //lol, that's what you think
+    
+    rowHasAPiece: function(rowIndex) {
+      var thisRow = this.get(rowIndex);
+      var pieces = thisRow.reduce((accumulator, element) => accumulator + element);
+      return pieces > 0;
+    },
+    numberPiecesOnBoard: function() {
+      var board = this.rows();
+      var pieces = 0;
+      board.forEach(function (row) {
+        row.forEach(p => pieces += p );
+      });
+      return pieces;
+    }
 
 
   });
