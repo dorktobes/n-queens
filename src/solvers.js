@@ -54,21 +54,22 @@ window.countNRooksSolutions = function(n) {
   var solutionsCount = 0;
   
   var addPiece = function (board, row, col) {
-    for (var c = 0; c < n; c++) {      
-      //toggle current column/row combination
-      board.togglePiece(row, c);
-      //check to see if there are any rook conflicts
-      if (!board.hasAnyRooksConflicts()) {
+    for (var c = 0; c < n; c++) {
+      if (col.indexOf(c) === -1) {
+        //toggle current column/row combination
+        board.togglePiece(row, c);
         //check how many peices there are compared to n
         if (row < n - 1) {
           //if there are less than n peices, recurse
-          addPiece(board, row + 1);
+          col.push(c);
+          addPiece(board, row + 1, col);
+          col.pop();
         } else {
           solutionsCount++;
         }
-      }
-      //untoggle piece from current row/column combination
-      board.togglePiece(row, c);       
+        //untoggle piece from current row/column combination
+        board.togglePiece(row, c);      
+      }      
     }
   };
   // run recursive function with empty board
@@ -133,7 +134,7 @@ window.countNQueensSolutions = function(n) {
         //toggle current column/row combination
         board.togglePiece(row, c);
         //check to see if there are any rook conflicts
-        if (!board.hasAnyQueensConflicts()) {
+        if (!board.hasMajorDiagonalConflictAt(c - row) && !board.hasMinorDiagonalConflictAt(c + row)) {
           //check how many peices there are compared to n
           if (row < n - 1) {
             //if there are less than n peices, recurse
