@@ -16,9 +16,7 @@
 
 
 window.findNRooksSolution = function(n) {
-  if (n === 0) {
-    return [];
-  }
+
   var board = new Board({ n: n});
   // array to hold all possible board sollutions
   
@@ -29,7 +27,7 @@ window.findNRooksSolution = function(n) {
       //check to see if there are any rook conflicts
       if (!board.hasAnyRooksConflicts()) {
         //check how many peices there are compared to n
-        if (board.numberPiecesOnBoard() < n) {
+        if (row < n - 1) {
           //if there are less than n peices, recurse
           return addPiece(board, row + 1);
         } else {
@@ -50,26 +48,28 @@ window.findNRooksSolution = function(n) {
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  if (n === 0) {
-    return 1;
-  }
+  
   var board = new Board({ n: n});
   // array to hold all possible board sollutions
   var solutions = [];
+  var solutionsCount = 0;
+  var counter = 1;
   
-  var addPiece = function (board, row) {
-    for (var c = 0; c < n; c++) {
+  var addPiece = function (board, row, col) {
+    for (var c = 0; c < n; c++) {                      
       //toggle current column/row combination
       board.togglePiece(row, c);
       //check to see if there are any rook conflicts
       if (!board.hasAnyRooksConflicts()) {
         //check how many peices there are compared to n
-        if (board.numberPiecesOnBoard() < n) {
+        if (row < n - 1) {
           //if there are less than n peices, recurse
           addPiece(board, row + 1);
+          counter++;
         } else {
           //otherwise, push board to solutions array
-          solutions.push(board.captureRows());
+          //solutions.push(board.captureRows());
+          solutionsCount++;
         }
       }
       //untoggle piece from current row/column combination
@@ -79,17 +79,14 @@ window.countNRooksSolutions = function(n) {
   // run recursive function with empty board
   addPiece(board, 0);
   // pick one solution from solutions array
-  var solutionCount = solutions.length; //fixme
-
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  //var solutionCount = solutions.length; //fixme
+  console.log('Number of solutions for ' + n + ' rooks:', solutionsCount);
+  return solutionsCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  if (n === 0) {
-    return 1;
-  }
+
   var board = new Board({ n: n});
   // array to hold all possible board sollutions
   var solutions = [];
@@ -101,7 +98,7 @@ window.findNQueensSolution = function(n) {
       //check to see if there are any rook conflicts
       if (!board.hasAnyQueensConflicts()) {
         //check how many peices there are compared to n
-        if (board.numberPiecesOnBoard() < n) {
+        if (row < n - 1) {
           //if there are less than n peices, recurse
           addPiece(board, row + 1);
         } else {
@@ -118,6 +115,9 @@ window.findNQueensSolution = function(n) {
   // pick one solution from solutions array
   // var solution = JSON.stringify(solutions[0]); //fixme
   var solution = solutions[0];
+  if (!solution) {
+    return board.rows();
+  }
 
   console.log('Single solution for ' + n + ' queens:', JSON.stringify(solution));
   return solution;
@@ -139,7 +139,7 @@ window.countNQueensSolutions = function(n) {
       //check to see if there are any rook conflicts
       if (!board.hasAnyQueensConflicts()) {
         //check how many peices there are compared to n
-        if (board.numberPiecesOnBoard() < n) {
+        if (row < n - 1) {
           //if there are less than n peices, recurse
           addPiece(board, row + 1);
         } else {
