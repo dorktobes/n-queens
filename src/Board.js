@@ -189,7 +189,7 @@
     /*--------------------  End of Helper Functions  ---------------------*/
     //lol, that's what you think
     
-    rowHasAPiece: function(rowIndex) {
+    rowHasPiece: function(rowIndex) {
       var thisRow = this.get(rowIndex);
       var pieces = thisRow.reduce((accumulator, element) => accumulator + element);
       return pieces > 0;
@@ -201,6 +201,15 @@
         row.forEach(p => pieces += p );
       });
       return pieces;
+    },
+    
+    captureRows: function() {
+      var rows = this.rows();
+      var copy = [];
+      rows.forEach(function(el) {
+        copy.push(el.slice());
+      });
+      return copy;
     }
 
 

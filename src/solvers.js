@@ -16,15 +16,70 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
-
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  if (n === 0) {
+    return [];
+  }
+  var board = new Board({ n: n});
+  // array to hold all possible board sollutions
+  
+  var addPiece = function (board, row) {
+    for (var c = 0; c < n; c++) {
+      //toggle current column/row combination
+      board.togglePiece(row, c);
+      //check to see if there are any rook conflicts
+      if (!board.hasAnyRooksConflicts()) {
+        //check how many peices there are compared to n
+        if (board.numberPiecesOnBoard() < n) {
+          //if there are less than n peices, recurse
+          return addPiece(board, row + 1);
+        } else {
+          //otherwise, push board to solutions array
+          console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board.captureRows()));
+          return board.captureRows();
+        }
+      }
+      //untoggle piece from current row/column combination
+      board.togglePiece(row, c);
+    }
+  };
+  // run recursive function with empty board
+  return addPiece(board, 0);
 };
+
+
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  if (n === 0) {
+    return 1;
+  }
+  var board = new Board({ n: n});
+  // array to hold all possible board sollutions
+  var solutions = [];
+  
+  var addPiece = function (board, row) {
+    for (var c = 0; c < n; c++) {
+      //toggle current column/row combination
+      board.togglePiece(row, c);
+      //check to see if there are any rook conflicts
+      if (!board.hasAnyRooksConflicts()) {
+        //check how many peices there are compared to n
+        if (board.numberPiecesOnBoard() < n) {
+          //if there are less than n peices, recurse
+          addPiece(board, row + 1);
+        } else {
+          //otherwise, push board to solutions array
+          solutions.push(board.captureRows());
+        }
+      }
+      //untoggle piece from current row/column combination
+      board.togglePiece(row, c);
+    }
+  };
+  // run recursive function with empty board
+  addPiece(board, 0);
+  // pick one solution from solutions array
+  var solutionCount = solutions.length; //fixme
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
